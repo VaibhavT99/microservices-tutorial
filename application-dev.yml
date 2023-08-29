@@ -1,1 +1,17 @@
+spring:
+    application:
+        name: CONFIG-SERVER-DEV
+    main:
+        banner-mode: off 
+    output:
+        ansi:
+            enabled: ALWAYS
 
+eureka:
+    instance:
+        prefer-ip-address: true
+    client:
+        fetch-registry: true
+        register-with-eureka: true
+        service-url:
+            dafaultZone: http://localhost:8761/eureka
