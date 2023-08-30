@@ -1,12 +1,17 @@
 server:
-    port: 8085
+  port: 8085
 
 spring:
-    application:
-        name: CONFIG-SERVER
-    cloud:
-        config:
-            server:
-                git:
-                    uri: https://github.com/VaibhavT99/ms-tutorial-config-server
-                    clone-on-start: true
+  application:
+    name: CONFIG-SERVER
+  main:
+    banner-mode: off
+  output:
+    ansi:
+      enabled: ALWAYS
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/VaibhavT99/microservices-tutorial/
+          clone-on-start: true
