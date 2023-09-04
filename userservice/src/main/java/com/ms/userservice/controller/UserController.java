@@ -3,6 +3,8 @@ package com.ms.userservice.controller;
 import java.util.List;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +35,16 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newuser);
     }
 
+    int retryCount = 1;
+
     @GetMapping("/{userId}")
-    @CircuitBreaker(name = "user-hotel-rating-breaker", fallbackMethod = "userHotelRatingFallback")
+//    @CircuitBreaker(name = "user-hotel-rating-breaker", fallbackMethod = "userHotelRatingFallback")
+//    @Retry(name = "user-hotel-rating-retry", fallbackMethod = "userHotelRatingFallback")
+
+    @RateLimiter(name = "user-hotel-rate-limiter", fallbackMethod = "userHotelRatingFallback")
+
     public ResponseEntity<User> getUser(@PathVariable String userId) {
+        logger.info("Retry Count: {}", retryCount++);
         User user = userService.getUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
@@ -55,6 +64,6 @@ public class UserController {
                 .about("Service is down. Dummy user created.")
                 .userId("42069")
                 .build();
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.GATEWAY_TIMEOUT);
     }
 }
